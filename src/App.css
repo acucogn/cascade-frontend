@@ -1,0 +1,417 @@
+/* ============================================= */
+/*          GOOGLE FONT & THEME VARIABLES        */
+/* ============================================= */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+:root {
+  --font-primary: 'Poppins', sans-serif;
+
+  /* Vibrant Light Theme Palette */
+  --bg-main: #f7f7f9;
+  --bg-panel: #ffffff;
+  --bg-bot-message: #eef2f7;
+
+  /* Accent Gradient */
+  --accent-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --accent-solid: #667eea;
+
+  /* Text Colors */
+  --text-dark: #212529;
+  --text-light: #f8f9fa;
+  --text-muted: #6c757d;
+
+  /* Borders & Shadows */
+  --border-color: #e0e0e0;
+  --shadow-color: rgba(102, 126, 234, 0.15); /* Soft shadow from accent color */
+  
+  /* System & Error Colors */
+  --system-bg: #fffbe6;
+  --system-text: #b45309;
+  --error-bg: #fef2f2;
+  --error-text: #b91c1c;
+
+  /* UI Sizing & Speed */
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --transition-speed: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* ============================================= */
+/*          GENERAL & KEYFRAME ANIMATIONS        */
+/* ============================================= */
+@keyframes slideUpFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-dark);
+  font-family: var(--font-primary);
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.App-header {
+  background: var(--bg-panel);
+  padding: 1rem 1.5rem;
+  text-align: center;
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.App-header h1 {
+  margin: 0;
+  font-size: 1.6em;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.App-main {
+  display: flex;
+  flex-grow: 1;
+  padding: 1.5rem;
+  gap: 1.5rem;
+  overflow: hidden;
+}
+
+.left-panel, .right-panel {
+  background-color: var(--bg-panel);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 25px var(--shadow-color);
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+}
+
+.left-panel {
+  flex: 0 0 320px;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.right-panel {
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+/* ============================================= */
+/*             FILE UPLOAD & BUTTONS             */
+/* ============================================= */
+.primary-button {
+  padding: 0.75rem 1.5rem;
+  background: var(--accent-gradient);
+  color: var(--text-light);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: 500;
+  transition: all var(--transition-speed);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.primary-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 7px 20px rgba(0, 0, 0, 0.15);
+}
+
+.primary-button:disabled {
+  background: #bdc3c7;
+  color: #7f8c8d;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.file-upload-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.file-upload-container h3 {
+  margin-top: 0;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.file-upload-container input[type="file"] {
+  border: 2px dashed var(--border-color);
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  transition: border-color var(--transition-speed);
+}
+
+.file-upload-container input[type="file"]:hover {
+  border-color: var(--accent-solid);
+}
+
+.file-upload-container button {
+  /* Inherits from .primary-button */
+}
+
+
+/* ============================================= */
+/*             CHAT WINDOW & MESSAGES            */
+/* ============================================= */
+.chat-window-container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 1.5rem;
+}
+
+.message-list {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.message {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  max-width: 85%;
+  animation: slideUpFadeIn 0.5s var(--transition-speed) both;
+}
+
+.message-avatar {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1.1em;
+}
+
+.message-bubble {
+  padding: 12px 18px;
+  border-radius: var(--radius-lg);
+  word-wrap: break-word;
+  line-height: 1.6;
+}
+
+/* User Message Styling */
+.message.user {
+  margin-left: auto;
+  flex-direction: row-reverse; /* Avatar on the right */
+}
+
+.message.user .message-avatar {
+  background: var(--accent-gradient);
+  color: var(--text-light);
+}
+
+.message.user .message-bubble {
+  background: var(--accent-gradient);
+  color: var(--text-light);
+  border-bottom-right-radius: 5px; /* Bubble tail */
+}
+
+/* Assistant Message Styling */
+.message.assistant {
+  margin-right: auto;
+}
+
+.logout-btn {
+  margin-left: auto;          /* push it to the right */
+  padding: 6px 14px;
+  border: none;
+  border-radius: 9999px;      /* pill shape */
+  background: #ef4444;        /* Tailwind's red‑500 */
+  color: #fff;
+  font-size: 0.875rem;        /* 14 px */
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.logout-btn:hover {
+  background: #dc2626;        /* red‑600 */
+}
+
+.logout-btn:active {
+  background: #b91c1c;        /* red‑700 */
+}
+
+.message.assistant .message-avatar {
+  background-color: var(--bg-bot-message);
+  color: var(--accent-solid);
+}
+
+.message.assistant .message-bubble {
+  background: var(--bg-bot-message);
+  color: var(--text-dark);
+  border-bottom-left-radius: 5px; /* Bubble tail */
+}
+
+/* System/Error Message Styling */
+.message.system .message-bubble {
+  width: 100%;
+  text-align: center;
+  font-style: italic;
+  font-size: 0.9em;
+  border-radius: var(--radius-md);
+}
+.message.system.error .message-bubble {
+  background: var(--error-bg);
+  color: var(--error-text);
+}
+.message.system.info .message-bubble {
+  background: var(--system-bg);
+  color: var(--system-text);
+}
+/* You would need to add these classes in your React component */
+/* Example: <div className="message system error"><div className="message-bubble">...</div></div> */
+
+
+/* ============================================= */
+/*             MESSAGE INPUT AREA                */
+/* ============================================= */
+.message-input-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem 1.5rem 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.message-input-container input[type="text"] {
+  flex-grow: 1;
+  padding: 14px 22px;
+  background-color: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: 9999px; /* Pill shape */
+  font-size: 1em;
+  font-family: var(--font-primary);
+  color: var(--text-dark);
+  transition: all var(--transition-speed);
+}
+
+.message-input-container input[type="text"]:focus {
+  outline: none;
+  border-color: var(--accent-solid);
+  box-shadow: 0 0 0 4px var(--shadow-color);
+}
+
+/* ============================================= */
+/*             UPDATE/ADD THESE STYLES           */
+/* ============================================= */
+
+/* --- MODIFY the existing .App-header --- */
+.App-header {
+  background: var(--bg-panel);
+  padding: 0.75rem 1.5rem; /* Adjusted padding for a sleeker look */
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  /* The key change: Use Flexbox for layout */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* --- MODIFY the existing .App-header h1 --- */
+.App-header h1 {
+  margin: 0;
+  font-size: 1.4em; /* Slightly adjusted for balance */
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+/* --- ADD these NEW classes for the title container and chip --- */
+.header-title-container {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Controls the space between the title and the chip */
+}
+
+.header-chip {
+  background-color: var(--bg-bot-message); /* A subtle background */
+  color: var(--accent-solid); /* Uses the theme's accent color */
+  padding: 4px 10px;
+  border-radius: 9999px; /* This creates the pill shape */
+  font-size: 0.8em;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* --- ADD a style for the error message (already in your JSX) --- */
+.error-message {
+  background-color: var(--error-bg);
+  color: var(--error-text);
+  padding: 10px 15px;
+  margin-top: 1rem;
+  border-radius: var(--radius-md);
+  text-align: center;
+  font-size: 0.9em;
+  border: 1px solid var(--error-text);
+}
+
+
+.message-input-container button {
+  flex-shrink: 0;
+  width: 50px;
+  height: 50px;
+  padding: 0;
+  background: var(--accent-gradient);
+  color: var(--text-light);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.5em; /* Perfect for an icon */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-speed);
+}
+
+.message-input-container button:hover {
+  transform: scale(1.1) rotate(15deg);
+}
+
+.message-input-container button:disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
+  transform: none;
+}
+/* For the send button, add an SVG icon inside it in your HTML/JSX */
+/* e.g. <button> <svg>...</svg> </button> */
+
+/* ============================================= */
+/*               CUSTOM SCROLLBAR                */
+/* ============================================= */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
