@@ -1,9 +1,7 @@
-// src/services/apiService.js
 import axios from "axios";
 
-// Fall back to FastAPI dev server if no env var is set
 const API_BASE_URL =
-  process.env.REACT_APP_API_BASE_URL || "https://cunning-model-puma.ngrok-free.app/api/v1";
+  process.env.REACT_APP_API_BASE_URL || "http://localhost:8000/api/v1";
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -12,10 +10,20 @@ const apiClient = axios.create({
   },
 });
 
-/* ------------------------------------------------------------------
-   Upload a PDF/image.  Pass token only if the /upload/ route is
-   protected on the backend; otherwise you can omit it.
-------------------------------------------------------------------- */
+
+export function ingestUrl(url, token = null) {
+  return apiClient.post(
+    "/ingest-url/", // This endpoint must exist on your backend
+    { url },
+    {
+      headers: {
+        ...(token && { Authorization: `Bearer ${token}` }),
+      },
+    }
+  );
+}
+
+
 export function uploadDocument(file, token = null) {
   const formData = new FormData();
   formData.append("file", file);
@@ -23,30 +31,28 @@ export function uploadDocument(file, token = null) {
   return apiClient.post("/upload/", formData, {
     headers: {
       "Content-Type": "multipart/form-data",
-      ...(token && { Authorization: `Bearer ${token}` }), // add if present
+      ...(token && { Authorization: `Bearer ${token}` }), 
     },
   });
 }
 
-/* ------------------------------------------------------------------
-   Send a chat message.  `token` is REQUIRED because /chat/ depends
-   on user identity for per‑user history.
-------------------------------------------------------------------- */
+
+
 export function sendMessage(query, history, documentId, token, language = "auto") {
   return apiClient.post(
     "/chat/",
     {
       query,
-      chat_history: history,          // ✅ correct key
+      chat_history: history,         
       document_ids: [documentId], 
-      language, // string or null
+      language, // 
     },
     {
       headers: {
-        Authorization: `Bearer ${token}`, // always send JWT
+        Authorization: `Bearer ${token}`, 
       },
     }
   );
 }
 
-// Export additional API helpers here if you add more endpoints
+

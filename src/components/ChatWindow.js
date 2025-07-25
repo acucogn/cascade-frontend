@@ -1,10 +1,28 @@
 import React, { useEffect, useRef } from 'react';
 
+// --- CHANGE #1: ADD THIS HELPER FUNCTION ---
+// Its job is to create a clean, short display name for any source label.
+const formatSourceLabel = (label) => {
+  try {
+    // Check if the label is a URL by trying to parse it.
+    if (label.startsWith('http')) {
+      const url = new URL(label);
+      // Remove 'www.' for a cleaner look and return the hostname.
+      let shortHost = url.hostname.replace('www.', '');
+      return shortHost;
+    }
+  } catch (error) {
+    // If it's not a valid URL, it's a filename, so do nothing.
+  }
+  // For filenames, return the label as is.
+  return label;
+};
+
+
 function ChatWindow({ messages, currentDocumentId }) {
   const messageListRef = useRef(null);
   const bottomRef = useRef(null);
 
-  /* ⬇️ smooth‑scroll on every new message */
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -15,7 +33,7 @@ function ChatWindow({ messages, currentDocumentId }) {
         {messages.length === 0 && (
           <div className="message system info">
             <div className="message-bubble">
-              Upload a document and ask a question to get started!
+              Upload a document or image, paste a URL, and ask a question to get started!
             </div>
           </div>
         )}
@@ -37,25 +55,41 @@ function ChatWindow({ messages, currentDocumentId }) {
                   <div className="message-bubble">
                     {msg.content}
 
-                    {/* ✅ SAFER source rendering ‑ supports string OR object */}
+                    {/* --- CHANGE #2: REPLACE THE OLD SOURCE RENDERING WITH THIS --- */}
                     {Array.isArray(msg.sources) && msg.sources.length > 0 && (
                       <div className="message-sources">
-                        <strong>Sources:</strong>{' '}
-                        {msg.sources.map((src, i) => {
-                          const isString = typeof src === 'string';
-                          const doc   = isString ? src : (src.document_id ?? 'Unknown document');
-                          const page  =
-                            !isString && src.page !== undefined && src.page !== -1
-                              ? ` (p.${src.page})`
-                              : '';
+                        <strong>Sources:</strong>
+                        <ul>
+                          {msg.sources.map((src, i) => {
+                            // Get the full label (filename or full URL) from the backend
+                            const fullLabel = src.label || 'Unknown Source';
+                            // Use our helper to get the clean display name
+                            const shortLabel = formatSourceLabel(fullLabel);
+                            // Check again if it's a URL to decide if it should be a link
+                            const isUrl = fullLabel.startsWith('http');
+                            
+                            const pageInfo = src.page > 0 ? ` (p. ${src.page})` : '';
+                            const scoreInfo = src.score ? ` [Score: ${src.score.toFixed(2)}]` : '';
 
-                          return (
-                            <span key={i}>
-                              {doc}{page}
-                              {i < msg.sources.length - 1 ? ', ' : ''}
-                            </span>
-                          );
-                        })}
+                            return (
+                              <li key={i}>
+                                {isUrl ? (
+                                  // If it's a URL, make it a clickable link
+                                  // The link goes to the full URL, but the text is the short name
+                                  <a href={fullLabel} title={fullLabel} target="_blank" rel="noopener noreferrer">
+                                    {shortLabel}{pageInfo}
+                                  </a>
+                                ) : (
+                                  // If it's a filename, just display it
+                                  <span title={fullLabel}>
+                                    {shortLabel}{pageInfo}
+                                  </span>
+                                )}
+                                {scoreInfo}
+                              </li>
+                            );
+                          })}
+                        </ul>
                       </div>
                     )}
                   </div>
@@ -74,7 +108,6 @@ function ChatWindow({ messages, currentDocumentId }) {
           }
         })}
 
-        {/* auto‑scroll anchor */}
         <div ref={bottomRef} />
       </div>
     </div>

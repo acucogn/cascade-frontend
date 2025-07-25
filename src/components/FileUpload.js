@@ -14,6 +14,19 @@ function FileUpload({ onUploadSuccess, onUploadError, token }) {
       alert('Please select a file first!');
       return;
     }
+
+    console.log("Uploading file with token:", token);
+  
+  // Check if the token is missing right here
+  if (!token) {
+      console.error("Upload failed: No token provided!");
+      onUploadError("Authentication token is missing. Please log in again.");
+      setIsUploading(false); // Make sure to reset state
+      return;
+  }
+
+
+
     setIsUploading(true);
     try {
       const response = await uploadDocument(selectedFile, token); // pass JWT

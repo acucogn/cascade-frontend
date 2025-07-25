@@ -8,7 +8,7 @@ function MessageInput({ onSendMessage, isSending, token }) {
   const handleSubmit = (event) => {
     event.preventDefault();
     if (inputText.trim() === '') return;
-     onSendMessage(inputText, 'auto', token);  // pass token too
+     onSendMessage(inputText, 'auto', token);  
     setInputText('');
   };
 
@@ -31,7 +31,7 @@ function MessageInput({ onSendMessage, isSending, token }) {
         const formData = new FormData();
         formData.append('audio', audioBlob, 'recording.webm');
 
-        fetch('https://cunning-model-puma.ngrok-free.app/api/v1/upload-audio/', {
+        fetch('http://localhost:8000/api/v1/upload-audio/', {
           method: 'POST',
           body: formData,
         })
@@ -42,7 +42,7 @@ function MessageInput({ onSendMessage, isSending, token }) {
 
             if (transcript) {
               setInputText(transcript);
-              onSendMessage(transcript, language, token); // language + token
+              onSendMessage(transcript, language, token); 
               setInputText('');
             } else {
               alert('Failed to transcribe audio.');
@@ -54,14 +54,14 @@ function MessageInput({ onSendMessage, isSending, token }) {
           });
       };
 
-      // ✅ Add speech recognition
+      
       const recognition = new window.webkitSpeechRecognition();
       recognition.continuous = false;
-      recognition.lang = 'en-US'; // optional - not critical since whisper detects language
+      recognition.lang = 'en-US'; 
 
       recognition.onstart = () => {
         setIsListening(true);
-        mediaRecorder.start(); // Start recording
+        mediaRecorder.start(); 
       };
 
       recognition.onerror = (e) => {
@@ -79,8 +79,8 @@ function MessageInput({ onSendMessage, isSending, token }) {
 
       recognition.start();
 
-      // ✅ Ensure we stop speech recognition after a timeout (fail-safe)
-      setTimeout(() => recognition.stop(), 10000); // 10 sec max
+      
+      setTimeout(() => recognition.stop(), 10000); 
     });
   };
 
