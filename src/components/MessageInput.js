@@ -31,7 +31,7 @@ function MessageInput({ onSendMessage, isSending, token }) {
         const formData = new FormData();
         formData.append('audio', audioBlob, 'recording.webm');
 
-        fetch('http://localhost:8000/api/v1/upload-audio/', {
+        fetch('https://normal-globally-gannet.ngrok-free.app/api/v1/upload-audio/', {
           method: 'POST',
           body: formData,
         })

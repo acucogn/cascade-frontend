@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import GoogleButton from 'react-google-button';
 import './LoginPage.css'; 
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+const API_URL = process.env.REACT_APP_API_URL || 'https://normal-globally-gannet.ngrok-free.app';
 
 function LoginPage({ onLoginSuccess }) {
   const [isLoginView, setIsLoginView] = useState(true);
